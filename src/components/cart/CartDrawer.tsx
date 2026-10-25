@@ -11,6 +11,7 @@ export const CartDrawer: React.FC = () => {
     setIsCartOpen,
     updateCartQuantity,
     removeFromCart,
+    clearCart,
     cartSubtotal,
     setActiveView,
   } = useBookstore()
@@ -55,13 +56,25 @@ export const CartDrawer: React.FC = () => {
                 {cart.length} item
               </span>
             </div>
-            <button
-              onClick={() => setIsCartOpen(false)}
-              className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition"
-              aria-label="Tutup"
-            >
-              <X className="size-4" />
-            </button>
+            <div className="flex items-center gap-2">
+              {cart.length > 0 && (
+                <button
+                  onClick={clearCart}
+                  className="text-[11px] text-muted-foreground hover:text-destructive transition flex items-center gap-1 px-2 py-1 rounded hover:bg-destructive/10"
+                  title="Kosongkan seluruh isi keranjang"
+                >
+                  <Trash2 className="size-3" />
+                  <span>Kosongkan</span>
+                </button>
+              )}
+              <button
+                onClick={() => setIsCartOpen(false)}
+                className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground transition"
+                aria-label="Tutup"
+              >
+                <X className="size-4" />
+              </button>
+            </div>
           </div>
 
           {/* Cart Item List */}

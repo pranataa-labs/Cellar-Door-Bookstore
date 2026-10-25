@@ -70,11 +70,21 @@ const BookstoreContext = createContext<BookstoreContextType | undefined>(undefin
 
 const STORAGE_KEYS = {
   BOOKS: 'cellar_books_v2',
-  CART: 'cellar_cart_v2',
+  CART: 'cellar_cart_v3',
   ORDERS: 'cellar_orders_v2',
   USERS_DB: 'cellar_users_db_v1',
   SESSION_USER: 'cellar_session_user_v1',
   THEME: 'cellar_theme_v2',
+}
+
+// Clean up legacy cart cache from prior testing versions
+if (typeof window !== 'undefined') {
+  try {
+    localStorage.removeItem('cellar_cart_v1')
+    localStorage.removeItem('cellar_cart_v2')
+  } catch {
+    // Ignore in non-browser environments
+  }
 }
 
 export function BookstoreProvider({ children }: { children: ReactNode }) {
@@ -183,6 +193,8 @@ export function BookstoreProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     setCurrentUser(null)
     localStorage.removeItem(STORAGE_KEYS.SESSION_USER)
+    setCart([])
+    localStorage.removeItem(STORAGE_KEYS.CART)
     if (activeView === 'admin') {
       setActiveView('store')
     }
@@ -283,6 +295,8 @@ export function BookstoreProvider({ children }: { children: ReactNode }) {
 
   const clearCart = () => {
     setCart([])
+    localStorage.removeItem(STORAGE_KEYS.CART)
+    toast.info('Keranjang belanja telah dikosongkan')
   }
 
   const cartSubtotal = cart.reduce((sum, item) => {
