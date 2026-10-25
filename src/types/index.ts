@@ -42,9 +42,11 @@ export interface Order {
   customerName: string
   customerEmail: string
   customerPhone: string
-  shippingAddress: string
-  city: string
   postalCode: string
+  province?: string
+  city: string
+  district?: string
+  shippingAddress: string
   paymentMethod: PaymentMethod
   items: CartItem[]
   subtotal: number

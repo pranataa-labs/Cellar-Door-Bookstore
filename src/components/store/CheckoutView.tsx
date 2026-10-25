@@ -3,6 +3,7 @@ import { useBookstore } from '@/context/BookstoreContext'
 import { formatRupiah } from '@/lib/utils'
 import { PaymentMethod } from '@/types'
 import { BookCoverImage } from '@/components/common/BookCoverImage'
+import { lookupPostalCode, POPULAR_POSTAL_CODES } from '@/data/postalCodes'
 import {
   ArrowLeft,
   ShieldCheck,
@@ -12,6 +13,9 @@ import {
   Building2,
   Banknote,
   Check,
+  MapPin,
+  Sparkles,
+  Lock,
 } from 'lucide-react'
 
 export const CheckoutView: React.FC = () => {
@@ -21,9 +25,15 @@ export const CheckoutView: React.FC = () => {
   const [name, setName] = useState(currentUser?.name || '')
   const [email, setEmail] = useState(currentUser?.email || '')
   const [phone, setPhone] = useState('081234567890')
-  const [address, setAddress] = useState('Jl. Senopati No. 42, Kebayoran Baru')
-  const [city, setCity] = useState('Jakarta Selatan')
+
+  // Postal Code & Auto-filled Address States
   const [postalCode, setPostalCode] = useState('12190')
+  const [province, setProvince] = useState('DKI Jakarta')
+  const [city, setCity] = useState('Jakarta Selatan')
+  const [district, setDistrict] = useState('Kebayoran Baru (Kel. Senayan)')
+  const [isAutoResolved, setIsAutoResolved] = useState(true)
+  const [streetAddress, setStreetAddress] = useState('Jl. Senopati No. 42, RT 02 / RW 03')
+  const [deliveryNotes, setDeliveryNotes] = useState('')
 
   // Shipping & Payment
   const [courier, setCourier] = useState<'jne' | 'sicepat' | 'gosend'>('jne')
@@ -31,6 +41,29 @@ export const CheckoutView: React.FC = () => {
   const [couponCode, setCouponCode] = useState('')
   const [appliedDiscount, setAppliedDiscount] = useState(0)
   const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const handlePostalCodeChange = (code: string) => {
+    const cleanCode = code.replace(/\D/g, '').slice(0, 5)
+    setPostalCode(cleanCode)
+    
+    if (cleanCode.length === 5) {
+      const match = lookupPostalCode(cleanCode)
+      if (match) {
+        setProvince(match.province)
+        setCity(match.city)
+        setDistrict(`${match.district} (Kel. ${match.subdistrict})`)
+        setIsAutoResolved(true)
+      } else {
+        setIsAutoResolved(false)
+      }
+    } else {
+      setIsAutoResolved(false)
+    }
+  }
+
+  const handleSelectQuickPostalCode = (code: string) => {
+    handlePostalCodeChange(code)
+  }
 
   const shippingFees = {
     jne: cartSubtotal > 300000 ? 0 : 12000,
@@ -53,15 +86,28 @@ export const CheckoutView: React.FC = () => {
     e.preventDefault()
     if (cart.length === 0) return
 
+    const fullFormattedAddress = [
+      streetAddress.trim(),
+      district.trim(),
+      city.trim(),
+      province.trim(),
+      postalCode.trim(),
+      deliveryNotes.trim() ? `(Catatan: ${deliveryNotes.trim()})` : '',
+    ]
+      .filter(Boolean)
+      .join(', ')
+
     setIsSubmitting(true)
     setTimeout(() => {
       createOrder({
         customerName: name,
         customerEmail: email,
         customerPhone: phone,
-        shippingAddress: address,
-        city,
         postalCode,
+        province,
+        city,
+        district,
+        shippingAddress: fullFormattedAddress,
         paymentMethod,
         shippingCost,
         discount: appliedDiscount,
@@ -155,43 +201,141 @@ export const CheckoutView: React.FC = () => {
               <span className="flex size-5 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold">
                 2
               </span>
-              <h3 className="font-semibold text-sm text-foreground">Alamat Pengiriman & Kurir</h3>
+              <div>
+                <h3 className="font-semibold text-sm text-foreground">Alamat Pengiriman & Kurir</h3>
+                <p className="text-[11px] text-muted-foreground">
+                  Gunakan kode pos untuk mengisi otomatis wilayah dan kota tujuan.
+                </p>
+              </div>
             </div>
 
-            <div className="space-y-3.5">
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-foreground">Alamat Lengkap</label>
-                <textarea
-                  rows={2}
-                  required
-                  value={address}
-                  onChange={e => setAddress(e.target.value)}
-                  className="w-full rounded-md border border-input bg-background p-2.5 text-xs focus:border-ring focus:outline-none"
-                  placeholder="Nama jalan, nomor rumah, RT/RW, kelurahan"
-                />
+            <div className="space-y-4">
+              {/* 1. KODE POS PALING ATAS (Primary Anchor) */}
+              <div className="space-y-2 rounded-lg border border-primary/20 bg-primary/5 p-3.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-bold text-foreground flex items-center gap-1.5">
+                    <MapPin className="size-3.5 text-primary" />
+                    <span>Kode Pos Tujuan (5 Digit) *</span>
+                  </label>
+                  {isAutoResolved && (
+                    <span className="inline-flex items-center gap-1 text-[11px] text-teal-600 dark:text-teal-400 font-semibold bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/20">
+                      <Sparkles className="size-3" />
+                      <span>Wilayah Terdeteksi Otomatis</span>
+                    </span>
+                  )}
+                </div>
+
+                <div className="relative">
+                  <input
+                    type="text"
+                    required
+                    maxLength={5}
+                    placeholder="Contoh: 12190"
+                    value={postalCode}
+                    onChange={e => handlePostalCodeChange(e.target.value)}
+                    className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm font-mono font-bold tracking-wider text-foreground focus:border-ring focus:outline-none"
+                  />
+                </div>
+
+                {/* Quick Postal Code Pills for instant 1-click test */}
+                <div className="space-y-1 pt-1">
+                  <span className="text-[10px] text-muted-foreground block font-medium">
+                    Pilih cepat kode pos kota populer:
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {POPULAR_POSTAL_CODES.map(item => (
+                      <button
+                        key={item.code}
+                        type="button"
+                        onClick={() => handleSelectQuickPostalCode(item.code)}
+                        className={`rounded px-2 py-0.5 text-[10px] font-medium transition ${
+                          postalCode === item.code
+                            ? 'bg-primary text-primary-foreground font-bold shadow-2xs'
+                            : 'bg-background border border-border text-muted-foreground hover:bg-muted hover:text-foreground'
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3.5">
+              {/* 2. FORM OTOMATIS TERISI (Provinsi, Kota, Kecamatan) */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 rounded-lg border border-border bg-card/60 p-3 text-xs">
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-foreground">Kota / Kabupaten</label>
+                  <label className="text-[11px] font-semibold text-muted-foreground flex items-center gap-1">
+                    <Lock className="size-2.5" />
+                    <span>Provinsi</span>
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={province}
+                    onChange={e => setProvince(e.target.value)}
+                    placeholder="Provinsi"
+                    className="w-full h-8 rounded border border-input bg-muted/40 px-2.5 text-xs font-medium text-foreground focus:outline-none"
+                  />
+                </div>
+
+                <div className="space-y-1">
+                  <label className="text-[11px] font-semibold text-muted-foreground flex items-center gap-1">
+                    <Lock className="size-2.5" />
+                    <span>Kota / Kabupaten</span>
+                  </label>
                   <input
                     type="text"
                     required
                     value={city}
                     onChange={e => setCity(e.target.value)}
-                    className="w-full h-9 rounded-md border border-input bg-background px-3 text-xs focus:border-ring focus:outline-none"
+                    placeholder="Kota / Kabupaten"
+                    className="w-full h-8 rounded border border-input bg-muted/40 px-2.5 text-xs font-medium text-foreground focus:outline-none"
                   />
                 </div>
+
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-foreground">Kode Pos</label>
+                  <label className="text-[11px] font-semibold text-muted-foreground flex items-center gap-1">
+                    <Lock className="size-2.5" />
+                    <span>Kecamatan & Kelurahan</span>
+                  </label>
                   <input
                     type="text"
                     required
-                    value={postalCode}
-                    onChange={e => setPostalCode(e.target.value)}
-                    className="w-full h-9 rounded-md border border-input bg-background px-3 text-xs focus:border-ring focus:outline-none"
+                    value={district}
+                    onChange={e => setDistrict(e.target.value)}
+                    placeholder="Kecamatan"
+                    className="w-full h-8 rounded border border-input bg-muted/40 px-2.5 text-xs font-medium text-foreground focus:outline-none"
                   />
                 </div>
+              </div>
+
+              {/* 3. ALAMAT DETAIL (Jalan, No. Bangunan, RT/RW) */}
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-foreground">
+                  Detail Alamat (Nama Jalan, No. Rumah, RT/RW, Patokan) *
+                </label>
+                <textarea
+                  rows={2}
+                  required
+                  value={streetAddress}
+                  onChange={e => setStreetAddress(e.target.value)}
+                  className="w-full rounded-md border border-input bg-background p-2.5 text-xs focus:border-ring focus:outline-none"
+                  placeholder="Contoh: Jl. Senopati No. 42, RT 02 / RW 03 (Depan Apotek)"
+                />
+              </div>
+
+              {/* 4. CATATAN PENGIRIMAN UNTUK KURIR */}
+              <div className="space-y-1">
+                <label className="text-xs font-medium text-muted-foreground">
+                  Catatan untuk Kurir Pengantar (Opsional)
+                </label>
+                <input
+                  type="text"
+                  value={deliveryNotes}
+                  onChange={e => setDeliveryNotes(e.target.value)}
+                  placeholder="Contoh: Titipkan di satpam perumahan bila rumah kosong"
+                  className="w-full h-8 rounded-md border border-input bg-background px-3 text-xs focus:border-ring focus:outline-none"
+                />
               </div>
 
               {/* Courier Selection */}

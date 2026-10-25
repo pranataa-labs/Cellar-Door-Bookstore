@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { INITIAL_BOOKS, DEMO_USERS } from '../data/seedData'
 import { Book, CartItem } from '../types'
 import { formatRupiah } from '../lib/utils'
+import { lookupPostalCode } from '../data/postalCodes'
 
 describe('Domain Logic: Cart & Pricing Calculations (AAA Pattern)', () => {
   it('calculates the correct subtotal for single and multiple cart items', () => {
@@ -129,5 +130,48 @@ describe('Domain Logic: Authentication & Demo Users (AAA Pattern)', () => {
     expect(customerUser.email).toBe('user@example.com')
     expect(customerUser.password).toBe('password123')
     expect(customerUser.role).toBe('customer')
+  })
+})
+
+describe('Domain Logic: Postal Code Auto-Resolution (AAA Pattern)', () => {
+  it('automatically resolves Jakarta Selatan region for postal code 12190', () => {
+    // Arrange
+    const postalCode = '12190'
+
+    // Act
+    const resolved = lookupPostalCode(postalCode)
+
+    // Assert
+    expect(resolved).not.toBeNull()
+    expect(resolved?.city).toBe('Jakarta Selatan')
+    expect(resolved?.district).toBe('Kebayoran Baru')
+    expect(resolved?.province).toBe('DKI Jakarta')
+  })
+
+  it('automatically resolves Bandung region for postal code 40135', () => {
+    // Arrange
+    const postalCode = '40135'
+
+    // Act
+    const resolved = lookupPostalCode(postalCode)
+
+    // Assert
+    expect(resolved).not.toBeNull()
+    expect(resolved?.city).toBe('Bandung')
+    expect(resolved?.province).toBe('Jawa Barat')
+  })
+
+  it('returns null safely for incomplete or unknown postal codes', () => {
+    // Arrange
+    const incompleteCode = '121'
+    const unknownCode = '99999'
+
+    // Act
+    const res1 = lookupPostalCode(incompleteCode)
+    const res2 = lookupPostalCode(unknownCode)
+
+    // Assert
+    expect(res1).toBeNull()
+    expect(res2).toBeNull()
   })
 })

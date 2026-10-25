@@ -33,9 +33,11 @@ interface BookstoreContextType {
     customerName: string
     customerEmail: string
     customerPhone: string
-    shippingAddress: string
-    city: string
     postalCode: string
+    province?: string
+    city: string
+    district?: string
+    shippingAddress: string
     paymentMethod: Order['paymentMethod']
     shippingCost: number
     discount: number
@@ -268,9 +270,11 @@ export function BookstoreProvider({ children }: { children: ReactNode }) {
     customerName: string
     customerEmail: string
     customerPhone: string
-    shippingAddress: string
-    city: string
     postalCode: string
+    province?: string
+    city: string
+    district?: string
+    shippingAddress: string
     paymentMethod: Order['paymentMethod']
     shippingCost: number
     discount: number
@@ -284,9 +288,11 @@ export function BookstoreProvider({ children }: { children: ReactNode }) {
       customerName: orderData.customerName,
       customerEmail: orderData.customerEmail,
       customerPhone: orderData.customerPhone,
-      shippingAddress: orderData.shippingAddress,
-      city: orderData.city,
       postalCode: orderData.postalCode,
+      province: orderData.province,
+      city: orderData.city,
+      district: orderData.district,
+      shippingAddress: orderData.shippingAddress,
       paymentMethod: orderData.paymentMethod,
       items: [...cart],
       subtotal,
