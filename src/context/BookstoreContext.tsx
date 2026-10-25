@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
-import { Book, BookCategory, CartItem, Order, OrderStatus, User } from '@/types'
-import { DEMO_USERS, INITIAL_BOOKS, INITIAL_ORDERS } from '@/data/seedData'
+import { Book, BookCategory, CartItem, Order, OrderStatus, User, UserAccount } from '@/types'
+import { DEFAULT_USER_ACCOUNTS, INITIAL_BOOKS, INITIAL_ORDERS } from '@/data/seedData'
 import { toast } from 'sonner'
 
 interface BookstoreContextType {
@@ -44,11 +44,15 @@ interface BookstoreContextType {
   }) => Order
   updateOrderStatus: (orderId: string, status: OrderStatus) => void
 
-  // Auth
+  // Real Auth & Registration
   currentUser: User | null
   login: (email: string, password: string) => boolean
+  register: (name: string, email: string, password: string, phone?: string) => boolean
   logout: () => void
-  switchDemoUser: (role: 'admin' | 'customer' | 'guest') => void
+  isAuthModalOpen: boolean
+  authModalMode: 'login' | 'register'
+  openAuthModal: (mode?: 'login' | 'register') => void
+  closeAuthModal: () => void
 
   // Navigation / Shell
   activeView: 'store' | 'admin' | 'orders' | 'checkout' | 'success'
@@ -68,7 +72,8 @@ const STORAGE_KEYS = {
   BOOKS: 'cellar_books_v2',
   CART: 'cellar_cart_v2',
   ORDERS: 'cellar_orders_v2',
-  USER: 'cellar_user_v2',
+  USERS_DB: 'cellar_users_db_v1',
+  SESSION_USER: 'cellar_session_user_v1',
   THEME: 'cellar_theme_v2',
 }
 
@@ -93,55 +98,95 @@ export function BookstoreProvider({ children }: { children: ReactNode }) {
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'))
   }
 
-  // 2. Auth State
-  const [currentUser, setCurrentUser] = useState<User | null>(() => {
-    const saved = localStorage.getItem(STORAGE_KEYS.USER)
+  // 2. Real User Database & Auth State
+  const [users, setUsers] = useState<UserAccount[]>(() => {
+    const saved = localStorage.getItem(STORAGE_KEYS.USERS_DB)
     if (saved) {
       try {
         return JSON.parse(saved)
       } catch {
-        return DEMO_USERS.customer
+        return DEFAULT_USER_ACCOUNTS
       }
     }
-    return DEMO_USERS.customer // Default to customer demo
+    return DEFAULT_USER_ACCOUNTS
   })
 
+  useEffect(() => {
+    localStorage.setItem(STORAGE_KEYS.USERS_DB, JSON.stringify(users))
+  }, [users])
+
+  const [currentUser, setCurrentUser] = useState<User | null>(() => {
+    const saved = localStorage.getItem(STORAGE_KEYS.SESSION_USER)
+    if (saved) {
+      try {
+        return JSON.parse(saved)
+      } catch {
+        return null
+      }
+    }
+    return null // Defaults to Guest
+  })
+
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false)
+  const [authModalMode, setAuthModalMode] = useState<'login' | 'register'>('login')
+
+  const openAuthModal = (mode: 'login' | 'register' = 'login') => {
+    setAuthModalMode(mode)
+    setIsAuthModalOpen(true)
+  }
+
+  const closeAuthModal = () => {
+    setIsAuthModalOpen(false)
+  }
+
   const login = (email: string, pass: string): boolean => {
-    const found = Object.values(DEMO_USERS).find(
-      u => u.email.toLowerCase() === email.toLowerCase() && u.password === pass
-    )
+    const cleanEmail = email.trim().toLowerCase()
+    const found = users.find(u => u.email.toLowerCase() === cleanEmail && u.password === pass)
     if (found) {
-      const { password: _, ...userWithoutPass } = found
-      setCurrentUser(userWithoutPass)
-      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(userWithoutPass))
-      toast.success(`Selamat datang kembali, ${userWithoutPass.name}!`)
+      const { password: _, ...userData } = found
+      setCurrentUser(userData)
+      localStorage.setItem(STORAGE_KEYS.SESSION_USER, JSON.stringify(userData))
+      toast.success(`Selamat datang kembali, ${userData.name}!`)
       return true
     }
-    toast.error('Email atau kata sandi tidak valid. Gunakan akun demo.')
+    toast.error('Email atau kata sandi tidak cocok. Silakan periksa kembali.')
     return false
+  }
+
+  const register = (name: string, email: string, pass: string, phone?: string): boolean => {
+    const cleanEmail = email.trim().toLowerCase()
+    const existing = users.find(u => u.email.toLowerCase() === cleanEmail)
+    if (existing) {
+      toast.error('Alamat email ini sudah terdaftar. Silakan masuk.')
+      return false
+    }
+
+    const newUser: UserAccount = {
+      id: `usr-${Date.now()}`,
+      name: name.trim(),
+      email: cleanEmail,
+      password: pass,
+      phone: phone?.trim(),
+      role: 'customer',
+      avatarUrl: `https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80`,
+      createdAt: new Date().toISOString(),
+    }
+
+    setUsers(prev => [newUser, ...prev])
+    const { password: _, ...cleanUserData } = newUser
+    setCurrentUser(cleanUserData)
+    localStorage.setItem(STORAGE_KEYS.SESSION_USER, JSON.stringify(cleanUserData))
+    toast.success('Pendaftaran berhasil! Selamat datang di Cellar Door Bookstore.')
+    return true
   }
 
   const logout = () => {
     setCurrentUser(null)
-    localStorage.removeItem(STORAGE_KEYS.USER)
-    toast.info('Anda telah keluar.')
-  }
-
-  const switchDemoUser = (role: 'admin' | 'customer' | 'guest') => {
-    if (role === 'guest') {
-      setCurrentUser(null)
-      localStorage.removeItem(STORAGE_KEYS.USER)
-      toast.info('Beralih ke mode Pengunjung (Guest)')
-    } else {
-      const target = DEMO_USERS[role]
-      const { password: _, ...userData } = target
-      setCurrentUser(userData)
-      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(userData))
-      toast.success(`Beralih akun: ${userData.name} (${role.toUpperCase()})`)
-      if (role === 'admin') {
-        setActiveView('admin')
-      }
+    localStorage.removeItem(STORAGE_KEYS.SESSION_USER)
+    if (activeView === 'admin') {
+      setActiveView('store')
     }
+    toast.info('Anda telah keluar dari akun.')
   }
 
   // 3. Books State
@@ -382,8 +427,12 @@ export function BookstoreProvider({ children }: { children: ReactNode }) {
 
         currentUser,
         login,
+        register,
         logout,
-        switchDemoUser,
+        isAuthModalOpen,
+        authModalMode,
+        openAuthModal,
+        closeAuthModal,
 
         activeView,
         setActiveView,

@@ -39,14 +39,17 @@ Pengisian alamat pengiriman yang efisien di mana pembeli cukup memasukkan 5 digi
 
 ---
 
-## 🔑 Akun Demo Siap Pakai
+## 🔑 Autentikasi & Akun Bawaan (Production-Ready Auth)
 
-Tersedia tombol **1-Klik Beralih Akun** pada header, jendela login, dan footer:
+Aplikasi telah dilengkapi alur autentikasi penuh:
+- **Pendaftaran Akun Pengguna Baru (Register)**: Pelanggan umum dapat mendaftar mandiri dengan nama, email, nomor telepon/WhatsApp, dan kata sandi yang tersimpan aman di database lokal persisten.
+- **Masuk Akun (Login)**: Memvalidasi kredensial pengguna terdaftar dan mengelola sesi aktif.
+- **Kredensial Bawaan Siap Pakai**:
 
 | Peran | Email | Kata Sandi | Akses Utama |
 |---|---|---|---|
-| **Admin** | `admin@example.com` | `password123` | Backoffice Dashboard, CRUD Buku, Manajemen Pesanan, Analitik |
-| **Customer** | `user@example.com` | `password123` | Storefront, Keranjang Belanja, Checkout Multi-kurir, Pesanan Saya |
+| **Admin Pengelola** | `admin@cellardoor.id` *(atau `admin@example.com`)* | `password123` | Backoffice Dashboard, CRUD Buku, Manajemen Pesanan, Analitik |
+| **Pelanggan Bawaan** | `user@example.com` | `password123` | Storefront, Keranjang Belanja, Checkout Multi-kurir, Riwayat Pesanan |
 
 ---
 

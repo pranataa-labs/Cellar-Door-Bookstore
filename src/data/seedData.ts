@@ -1,23 +1,35 @@
-import { Book, Order, User } from '@/types'
+import { Book, Order, UserAccount } from '@/types'
 
-export const DEMO_USERS: Record<string, User & { password: string }> = {
-  admin: {
+export const DEFAULT_USER_ACCOUNTS: UserAccount[] = [
+  {
     id: 'usr-admin-01',
-    name: 'Raden Pranata (Staff Admin)',
+    name: 'Staff Administrator',
+    email: 'admin@cellardoor.id',
+    password: 'password123',
+    role: 'admin',
+    avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    createdAt: '2026-01-01T00:00:00.000Z',
+  },
+  {
+    id: 'usr-admin-02',
+    name: 'Admin Utama',
     email: 'admin@example.com',
     password: 'password123',
     role: 'admin',
     avatarUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    createdAt: '2026-01-01T00:00:00.000Z',
   },
-  customer: {
-    id: 'usr-cust-02',
+  {
+    id: 'usr-cust-01',
     name: 'Aulia Saraswati',
     email: 'user@example.com',
     password: 'password123',
     role: 'customer',
+    phone: '081234567890',
     avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
+    createdAt: '2026-02-15T08:30:00.000Z',
   },
-}
+]
 
 export const INITIAL_BOOKS: Book[] = [
   {

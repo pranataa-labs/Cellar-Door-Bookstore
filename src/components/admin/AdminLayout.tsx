@@ -7,10 +7,10 @@ import { AdminBooksTab } from './AdminBooksTab'
 import { AdminOrdersTab } from './AdminOrdersTab'
 import { AdminCustomersTab } from './AdminCustomersTab'
 import { AdminAnalyticsTab } from './AdminAnalyticsTab'
-import { ShieldAlert, ArrowLeft, ShieldCheck } from 'lucide-react'
+import { ShieldAlert, ArrowLeft, LogIn } from 'lucide-react'
 
 export const AdminLayout: React.FC = () => {
-  const { currentUser, switchDemoUser, setActiveView } = useBookstore()
+  const { currentUser, openAuthModal, setActiveView } = useBookstore()
   const [currentTab, setCurrentTab] = useState<AdminTab>('dashboard')
   const [isCollapsed, setIsCollapsed] = useState(false)
 
@@ -23,17 +23,17 @@ export const AdminLayout: React.FC = () => {
         </div>
         <h2 className="text-xl font-bold text-foreground">Akses Dibatasi</h2>
         <p className="text-xs text-muted-foreground leading-relaxed">
-          Halaman Backoffice ini khusus untuk pengelola toko buku dengan role <strong>Admin</strong>.
-          Gunakan tombol di bawah untuk beralih ke akun admin demo siap pakai.
+          Halaman Backoffice ini khusus untuk staf pengelola toko buku dengan hak akses <strong>Administrator</strong>.
+          Silakan masuk dengan akun pengelola Anda untuk melanjutkan.
         </p>
 
         <div className="pt-2 flex flex-col gap-2">
           <button
-            onClick={() => switchDemoUser('admin')}
-            className="flex items-center justify-center gap-2 h-10 rounded-md bg-teal-600 text-white font-medium text-xs hover:bg-teal-700 transition shadow-xs"
+            onClick={() => openAuthModal('login')}
+            className="flex items-center justify-center gap-2 h-10 rounded-md bg-[#E5C690] text-slate-950 font-bold text-xs hover:bg-[#d8b578] transition shadow-xs"
           >
-            <ShieldCheck className="size-4" />
-            <span>Beralih ke Admin Demo (admin@example.com)</span>
+            <LogIn className="size-4" />
+            <span>Masuk sebagai Administrator</span>
           </button>
 
           <button

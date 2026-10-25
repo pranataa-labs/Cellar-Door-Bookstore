@@ -24,16 +24,25 @@ export const CheckoutView: React.FC = () => {
   // Form states
   const [name, setName] = useState(currentUser?.name || '')
   const [email, setEmail] = useState(currentUser?.email || '')
-  const [phone, setPhone] = useState('081234567890')
+  const [phone, setPhone] = useState(currentUser?.phone || '')
 
   // Postal Code & Auto-filled Address States
-  const [postalCode, setPostalCode] = useState('12190')
-  const [province, setProvince] = useState('DKI Jakarta')
-  const [city, setCity] = useState('Jakarta Selatan')
-  const [district, setDistrict] = useState('Kebayoran Baru (Kel. Senayan)')
-  const [isAutoResolved, setIsAutoResolved] = useState(true)
-  const [streetAddress, setStreetAddress] = useState('Jl. Senopati No. 42, RT 02 / RW 03')
+  const [postalCode, setPostalCode] = useState('')
+  const [province, setProvince] = useState('')
+  const [city, setCity] = useState('')
+  const [district, setDistrict] = useState('')
+  const [isAutoResolved, setIsAutoResolved] = useState(false)
+  const [streetAddress, setStreetAddress] = useState('')
   const [deliveryNotes, setDeliveryNotes] = useState('')
+
+  // Sync when currentUser changes (e.g. user logs in during checkout)
+  React.useEffect(() => {
+    if (currentUser) {
+      setName(prev => prev || currentUser.name)
+      setEmail(prev => prev || currentUser.email)
+      setPhone(prev => prev || currentUser.phone || '')
+    }
+  }, [currentUser])
 
   // Shipping & Payment
   const [courier, setCourier] = useState<'jne' | 'sicepat' | 'gosend'>('jne')
@@ -165,6 +174,7 @@ export const CheckoutView: React.FC = () => {
                 <input
                   type="text"
                   required
+                  placeholder="Contoh: Budi Santoso"
                   value={name}
                   onChange={e => setName(e.target.value)}
                   className="w-full h-9 rounded-md border border-input bg-background px-3 text-xs focus:border-ring focus:outline-none"
@@ -176,6 +186,7 @@ export const CheckoutView: React.FC = () => {
                 <input
                   type="tel"
                   required
+                  placeholder="Contoh: 081234567890"
                   value={phone}
                   onChange={e => setPhone(e.target.value)}
                   className="w-full h-9 rounded-md border border-input bg-background px-3 text-xs focus:border-ring focus:outline-none"
@@ -187,6 +198,7 @@ export const CheckoutView: React.FC = () => {
                 <input
                   type="email"
                   required
+                  placeholder="Contoh: budi@example.com"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   className="w-full h-9 rounded-md border border-input bg-background px-3 text-xs focus:border-ring focus:outline-none"

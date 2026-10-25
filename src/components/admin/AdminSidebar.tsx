@@ -8,7 +8,7 @@ import {
   Users,
   BarChart3,
   ExternalLink,
-  SlidersHorizontal,
+  LogOut,
 } from 'lucide-react'
 
 export type AdminTab = 'dashboard' | 'books' | 'orders' | 'customers' | 'analytics'
@@ -25,7 +25,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
   setCurrentTab,
   isCollapsed,
 }) => {
-  const { books, orders, currentUser, switchDemoUser, setActiveView } = useBookstore()
+  const { books, orders, currentUser, logout, setActiveView } = useBookstore()
 
   const pendingOrdersCount = orders.filter(o => o.status === 'Pending').length
 
@@ -175,20 +175,26 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
             </div>
 
             <button
-              onClick={() => switchDemoUser('customer')}
-              title="Beralih ke Pelanggan"
-              className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+              onClick={() => {
+                logout()
+                setActiveView('store')
+              }}
+              title="Keluar dari Admin"
+              className="rounded p-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition"
             >
-              <SlidersHorizontal className="size-3.5" />
+              <LogOut className="size-3.5" />
             </button>
           </div>
         ) : (
           <button
-            onClick={() => switchDemoUser('customer')}
-            title="Beralih ke Pelanggan"
-            className="flex size-9 items-center justify-center rounded-lg hover:bg-muted text-muted-foreground"
+            onClick={() => {
+              logout()
+              setActiveView('store')
+            }}
+            title="Keluar dari Admin"
+            className="flex size-9 items-center justify-center rounded-lg hover:bg-destructive/10 hover:text-destructive text-muted-foreground transition"
           >
-            <SlidersHorizontal className="size-4" />
+            <LogOut className="size-4" />
           </button>
         )}
       </div>

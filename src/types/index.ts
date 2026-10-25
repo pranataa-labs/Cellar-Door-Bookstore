@@ -65,7 +65,13 @@ export interface User {
   name: string
   email: string
   role: UserRole
+  phone?: string
   avatarUrl?: string
+  createdAt?: string
+}
+
+export interface UserAccount extends User {
+  password: string
 }
 
 export interface BookReview {

@@ -9,15 +9,10 @@ import {
   ShieldCheck,
   User as UserIcon,
   LogOut,
-  SlidersHorizontal,
   Package,
 } from 'lucide-react'
 
-interface HeaderProps {
-  onOpenAuth: () => void
-}
-
-export const Header: React.FC<HeaderProps> = ({ onOpenAuth }) => {
+export const Header: React.FC = () => {
   const {
     activeView,
     setActiveView,
@@ -27,7 +22,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAuth }) => {
     toggleTheme,
     currentUser,
     logout,
-    switchDemoUser,
+    openAuthModal,
     setIsCmdKOpen,
   } = useBookstore()
 
@@ -179,21 +174,13 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAuth }) => {
                       <span>Pesanan Saya</span>
                     </button>
 
-                    {currentUser.role === 'admin' ? (
+                    {currentUser.role === 'admin' && (
                       <button
                         onClick={() => setActiveView('admin')}
                         className="flex w-full items-center gap-2 rounded px-2.5 py-1.5 hover:bg-accent text-left font-medium text-teal-600 dark:text-teal-400"
                       >
                         <ShieldCheck className="size-3.5" />
                         <span>Buka Admin Backoffice</span>
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => switchDemoUser('admin')}
-                        className="flex w-full items-center gap-2 rounded px-2.5 py-1.5 hover:bg-accent text-left font-medium text-sky-600 dark:text-sky-400"
-                      >
-                        <SlidersHorizontal className="size-3.5" />
-                        <span>Beralih ke Admin Demo</span>
                       </button>
                     )}
                   </div>
@@ -213,10 +200,16 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAuth }) => {
           ) : (
             <div className="flex items-center gap-1.5">
               <button
-                onClick={onOpenAuth}
-                className="h-9 px-3 rounded-md bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition shadow-xs"
+                onClick={() => openAuthModal('login')}
+                className="h-9 px-3 rounded-md border border-border text-foreground text-xs font-medium hover:bg-muted transition shadow-2xs"
               >
-                Masuk / Akun
+                Masuk
+              </button>
+              <button
+                onClick={() => openAuthModal('register')}
+                className="h-9 px-3 rounded-md bg-[#E5C690] text-slate-950 text-xs font-bold hover:bg-[#d8b578] transition shadow-xs"
+              >
+                Daftar
               </button>
             </div>
           )}

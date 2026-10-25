@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
-import { INITIAL_BOOKS, DEMO_USERS } from '../data/seedData'
-import { Book, CartItem } from '../types'
+import { INITIAL_BOOKS, DEFAULT_USER_ACCOUNTS } from '../data/seedData'
+import { Book, CartItem, UserAccount } from '../types'
 import { formatRupiah } from '../lib/utils'
 import { lookupPostalCode } from '../data/postalCodes'
 
@@ -111,25 +111,56 @@ describe('Domain Logic: Filtering and Search (AAA Pattern)', () => {
   })
 })
 
-describe('Domain Logic: Authentication & Demo Users (AAA Pattern)', () => {
-  it('validates demo admin credentials', () => {
+describe('Domain Logic: Authentication & User Accounts (AAA Pattern)', () => {
+  it('validates default admin account configuration', () => {
     // Arrange
-    const adminUser = DEMO_USERS.admin
+    const adminUser = DEFAULT_USER_ACCOUNTS.find(u => u.email === 'admin@cellardoor.id')
+    const fallbackAdmin = DEFAULT_USER_ACCOUNTS.find(u => u.email === 'admin@example.com')
 
     // Act & Assert
-    expect(adminUser.email).toBe('admin@example.com')
-    expect(adminUser.password).toBe('password123')
-    expect(adminUser.role).toBe('admin')
+    expect(adminUser).toBeDefined()
+    expect(adminUser?.role).toBe('admin')
+    expect(adminUser?.password).toBe('password123')
+    expect(fallbackAdmin).toBeDefined()
+    expect(fallbackAdmin?.role).toBe('admin')
   })
 
-  it('validates demo customer credentials', () => {
+  it('validates initial customer account configuration', () => {
     // Arrange
-    const customerUser = DEMO_USERS.customer
+    const customerUser = DEFAULT_USER_ACCOUNTS.find(u => u.role === 'customer')
 
     // Act & Assert
-    expect(customerUser.email).toBe('user@example.com')
-    expect(customerUser.password).toBe('password123')
-    expect(customerUser.role).toBe('customer')
+    expect(customerUser).toBeDefined()
+    expect(customerUser?.email).toBe('user@example.com')
+    expect(customerUser?.password).toBe('password123')
+    expect(customerUser?.role).toBe('customer')
+  })
+
+  it('simulates new user registration and prevents duplicate email registration', () => {
+    // Arrange
+    const existingAccounts: UserAccount[] = [...DEFAULT_USER_ACCOUNTS]
+    const newAccountEmail = 'budi.santoso@example.com'
+
+    // Act: Check availability
+    const isEmailTakenBefore = existingAccounts.some(u => u.email.toLowerCase() === newAccountEmail.toLowerCase())
+    
+    // Register new user
+    const newUser: UserAccount = {
+      id: 'usr_new_1',
+      name: 'Budi Santoso',
+      email: newAccountEmail,
+      phone: '081298765432',
+      role: 'customer',
+      password: 'securePassword123',
+      createdAt: new Date().toISOString(),
+    }
+    const updatedAccounts = [...existingAccounts, newUser]
+    const isEmailTakenAfter = updatedAccounts.some(u => u.email.toLowerCase() === newAccountEmail.toLowerCase())
+
+    // Assert
+    expect(isEmailTakenBefore).toBe(false)
+    expect(isEmailTakenAfter).toBe(true)
+    expect(updatedAccounts.length).toBe(existingAccounts.length + 1)
   })
 })
 

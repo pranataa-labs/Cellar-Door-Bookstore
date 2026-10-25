@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useBookstore } from '@/context/BookstoreContext'
 import { Header } from '@/components/common/Header'
 import { Footer } from '@/components/common/Footer'
@@ -16,7 +16,6 @@ import { Toaster } from 'sonner'
 
 export const App: React.FC = () => {
   const { activeView, theme } = useBookstore()
-  const [isAuthOpen, setIsAuthOpen] = useState(false)
 
   // If in Admin Backoffice view
   if (activeView === 'admin') {
@@ -34,6 +33,7 @@ export const App: React.FC = () => {
         />
         <CommandPalette />
         <BookDetailModal />
+        <AuthModal />
         <AdminLayout />
       </>
     )
@@ -54,7 +54,7 @@ export const App: React.FC = () => {
       />
 
       {/* Navigation Header */}
-      <Header onOpenAuth={() => setIsAuthOpen(true)} />
+      <Header />
 
       {/* Main Views */}
       <main className="flex-1">
@@ -76,7 +76,7 @@ export const App: React.FC = () => {
       <CartDrawer />
       <CommandPalette />
       <BookDetailModal />
-      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+      <AuthModal />
     </div>
   )
 }
