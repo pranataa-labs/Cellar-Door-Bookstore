@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Book, BookCategory } from '@/types'
+import { BookCoverImage } from '@/components/common/BookCoverImage'
 import { X, Check, BookOpen } from 'lucide-react'
 
 interface BookFormSheetProps {
@@ -272,10 +273,14 @@ export const BookFormSheet: React.FC<BookFormSheetProps> = ({
                 className="flex-1 h-9 rounded-md border border-input bg-card px-3 text-xs font-mono"
               />
               {coverUrl && (
-                <img
+                <BookCoverImage
                   src={coverUrl}
-                  alt="Preview"
-                  className="size-9 rounded object-cover border border-border"
+                  alt={title || 'Preview'}
+                  title={title || 'Preview Judul'}
+                  author={author || 'Penulis'}
+                  category={category}
+                  containerClassName="size-9 rounded border border-border shrink-0"
+                  className="size-full object-cover"
                 />
               )}
             </div>

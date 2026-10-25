@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useBookstore } from '@/context/BookstoreContext'
 import { Book, BookCategory } from '@/types'
 import { formatRupiah } from '@/lib/utils'
+import { BookCoverImage } from '@/components/common/BookCoverImage'
 import { BookFormSheet } from './BookFormSheet'
 import {
   Plus,
@@ -165,10 +166,14 @@ export const AdminBooksTab: React.FC = () => {
                     </td>
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-3">
-                        <img
+                        <BookCoverImage
                           src={book.coverUrl}
-                          alt=""
-                          className="size-10 rounded object-cover border border-border shrink-0"
+                          alt={book.title}
+                          title={book.title}
+                          author={book.author}
+                          category={book.category}
+                          containerClassName="size-10 rounded border border-border shrink-0"
+                          className="size-full object-cover"
                         />
                         <div className="max-w-xs truncate">
                           <p className="font-semibold text-foreground truncate">{book.title}</p>

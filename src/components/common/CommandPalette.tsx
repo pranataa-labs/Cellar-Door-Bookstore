@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useBookstore } from '@/context/BookstoreContext'
 import { formatRupiah } from '@/lib/utils'
+import { BookCoverImage } from '@/components/common/BookCoverImage'
 import { Search, Book, ShieldCheck, Sun, Moon, ShoppingBag, X } from 'lucide-react'
 
 export const CommandPalette: React.FC = () => {
@@ -134,10 +135,14 @@ export const CommandPalette: React.FC = () => {
                     className="flex w-full items-center justify-between rounded-md px-2.5 py-2 hover:bg-accent text-left transition group"
                   >
                     <div className="flex items-center gap-2.5 truncate">
-                      <img
+                      <BookCoverImage
                         src={book.coverUrl}
-                        alt=""
-                        className="size-7 rounded object-cover shrink-0"
+                        alt={book.title}
+                        title={book.title}
+                        author={book.author}
+                        category={book.category}
+                        containerClassName="size-7 rounded shrink-0"
+                        className="size-full object-cover"
                       />
                       <div className="truncate">
                         <p className="font-medium text-foreground truncate group-hover:text-primary">

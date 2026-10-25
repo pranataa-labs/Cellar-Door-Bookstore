@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useBookstore } from '@/context/BookstoreContext'
 import { formatRupiah } from '@/lib/utils'
+import { BookCoverImage } from '@/components/common/BookCoverImage'
 import { X, Trash2, Plus, Minus, ShoppingBag, ArrowRight, Tag, Check } from 'lucide-react'
 
 export const CartDrawer: React.FC = () => {
@@ -91,10 +92,14 @@ export const CartDrawer: React.FC = () => {
                     key={item.book.id}
                     className="flex gap-3.5 rounded-lg border border-border p-3 bg-card/60 transition hover:border-border/80"
                   >
-                    <img
+                    <BookCoverImage
                       src={item.book.coverUrl}
                       alt={item.book.title}
-                      className="h-20 w-14 shrink-0 rounded object-cover shadow-2xs"
+                      title={item.book.title}
+                      author={item.book.author}
+                      category={item.book.category}
+                      className="size-full object-cover shadow-2xs"
+                      containerClassName="h-20 w-14 shrink-0 rounded"
                     />
                     <div className="flex flex-1 flex-col justify-between">
                       <div className="space-y-1">

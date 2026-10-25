@@ -63,11 +63,11 @@ interface BookstoreContextType {
 const BookstoreContext = createContext<BookstoreContextType | undefined>(undefined)
 
 const STORAGE_KEYS = {
-  BOOKS: 'cellar_books_v1',
-  CART: 'cellar_cart_v1',
-  ORDERS: 'cellar_orders_v1',
-  USER: 'cellar_user_v1',
-  THEME: 'cellar_theme_v1',
+  BOOKS: 'cellar_books_v2',
+  CART: 'cellar_cart_v2',
+  ORDERS: 'cellar_orders_v2',
+  USER: 'cellar_user_v2',
+  THEME: 'cellar_theme_v2',
 }
 
 export function BookstoreProvider({ children }: { children: ReactNode }) {

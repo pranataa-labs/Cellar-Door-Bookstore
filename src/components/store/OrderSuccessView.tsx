@@ -1,6 +1,7 @@
 import React from 'react'
 import { useBookstore } from '@/context/BookstoreContext'
 import { formatRupiah } from '@/lib/utils'
+import { BookCoverImage } from '@/components/common/BookCoverImage'
 import { CheckCircle2, Package, ArrowRight, Copy, QrCode } from 'lucide-react'
 import { toast } from 'sonner'
 
@@ -94,10 +95,14 @@ export const OrderSuccessView: React.FC = () => {
             {lastPlacedOrder.items.map(item => (
               <div key={item.book.id} className="py-2.5 flex items-center justify-between gap-4 text-xs">
                 <div className="flex items-center gap-3">
-                  <img
+                  <BookCoverImage
                     src={item.book.coverUrl}
-                    alt=""
-                    className="size-10 rounded object-cover border border-border shrink-0"
+                    alt={item.book.title}
+                    title={item.book.title}
+                    author={item.book.author}
+                    category={item.book.category}
+                    containerClassName="size-10 rounded border border-border shrink-0"
+                    className="size-full object-cover"
                   />
                   <div>
                     <h5 className="font-medium text-foreground">{item.book.title}</h5>

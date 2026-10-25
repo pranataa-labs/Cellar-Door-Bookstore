@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useBookstore } from '@/context/BookstoreContext'
 import { formatRupiah } from '@/lib/utils'
+import { BookCoverImage } from '@/components/common/BookCoverImage'
 import { X, Star, ShoppingBag, CheckCircle2, BookOpen, Calendar, Layers, ShieldCheck } from 'lucide-react'
 
 export const BookDetailModal: React.FC = () => {
@@ -36,13 +37,16 @@ export const BookDetailModal: React.FC = () => {
           {/* Cover & Badges */}
           <div className="md:col-span-5 flex flex-col items-center">
             <div className="relative overflow-hidden rounded-lg shadow-md border border-border w-full max-w-[240px]">
-              <img
+              <BookCoverImage
                 src={selectedBook.coverUrl}
                 alt={selectedBook.title}
+                title={selectedBook.title}
+                author={selectedBook.author}
+                category={selectedBook.category}
                 className="w-full aspect-[2/3] object-cover"
               />
               {selectedBook.badge && (
-                <span className="absolute top-2.5 left-2.5 rounded-md bg-primary text-primary-foreground text-[10px] font-bold px-2 py-0.5 tracking-wider uppercase shadow-xs">
+                <span className="absolute top-2.5 left-2.5 rounded-md bg-primary text-primary-foreground text-[10px] font-bold px-2 py-0.5 tracking-wider uppercase shadow-xs z-10">
                   {selectedBook.badge}
                 </span>
               )}

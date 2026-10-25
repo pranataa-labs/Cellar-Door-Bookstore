@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useBookstore } from '@/context/BookstoreContext'
 import { Order, OrderStatus } from '@/types'
 import { formatRupiah } from '@/lib/utils'
+import { BookCoverImage } from '@/components/common/BookCoverImage'
 import { Search, Eye, X } from 'lucide-react'
 
 export const AdminOrdersTab: React.FC = () => {
@@ -219,10 +220,14 @@ export const AdminOrdersTab: React.FC = () => {
                 {selectedOrder.items.map(item => (
                   <div key={item.book.id} className="py-2 flex items-center justify-between text-xs">
                     <div className="flex items-center gap-2.5">
-                      <img
+                      <BookCoverImage
                         src={item.book.coverUrl}
-                        alt=""
-                        className="size-8 rounded object-cover border border-border"
+                        alt={item.book.title}
+                        title={item.book.title}
+                        author={item.book.author}
+                        category={item.book.category}
+                        containerClassName="size-8 rounded border border-border shrink-0"
+                        className="size-full object-cover"
                       />
                       <div>
                         <p className="font-medium text-foreground">{item.book.title}</p>

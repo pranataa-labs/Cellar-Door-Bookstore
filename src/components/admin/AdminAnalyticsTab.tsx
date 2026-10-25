@@ -1,6 +1,7 @@
 import React from 'react'
 import { useBookstore } from '@/context/BookstoreContext'
 import { formatRupiah } from '@/lib/utils'
+import { BookCoverImage } from '@/components/common/BookCoverImage'
 import { Award, PieChart } from 'lucide-react'
 
 export const AdminAnalyticsTab: React.FC = () => {
@@ -91,10 +92,14 @@ export const AdminAnalyticsTab: React.FC = () => {
                   <span className="font-bold font-mono text-muted-foreground size-5 flex items-center justify-center">
                     #{idx + 1}
                   </span>
-                  <img
+                  <BookCoverImage
                     src={book.coverUrl}
-                    alt=""
-                    className="size-9 rounded object-cover border border-border"
+                    alt={book.title}
+                    title={book.title}
+                    author={book.author}
+                    category={book.category}
+                    containerClassName="size-9 rounded border border-border shrink-0"
+                    className="size-full object-cover"
                   />
                   <div>
                     <p className="font-semibold text-foreground truncate max-w-[180px]">{book.title}</p>

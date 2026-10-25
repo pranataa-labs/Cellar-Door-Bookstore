@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useBookstore } from '@/context/BookstoreContext'
 import { formatRupiah } from '@/lib/utils'
 import { OrderStatus } from '@/types'
+import { BookCoverImage } from '@/components/common/BookCoverImage'
 import { Package, Truck, Clock, CheckCircle2, AlertCircle, ArrowLeft } from 'lucide-react'
 
 export const CustomerOrdersView: React.FC = () => {
@@ -133,10 +134,14 @@ export const CustomerOrdersView: React.FC = () => {
                 {order.items.map(item => (
                   <div key={item.book.id} className="py-2.5 flex items-center justify-between gap-4 text-xs">
                     <div className="flex items-center gap-3">
-                      <img
+                      <BookCoverImage
                         src={item.book.coverUrl}
-                        alt=""
-                        className="size-11 rounded object-cover border border-border shrink-0"
+                        alt={item.book.title}
+                        title={item.book.title}
+                        author={item.book.author}
+                        category={item.book.category}
+                        containerClassName="size-11 rounded border border-border shrink-0"
+                        className="size-full object-cover"
                       />
                       <div>
                         <h4 className="font-semibold text-foreground">{item.book.title}</h4>

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useBookstore } from '@/context/BookstoreContext'
 import { formatRupiah } from '@/lib/utils'
 import { PaymentMethod } from '@/types'
+import { BookCoverImage } from '@/components/common/BookCoverImage'
 import {
   ArrowLeft,
   ShieldCheck,
@@ -331,10 +332,14 @@ export const CheckoutView: React.FC = () => {
                 const price = item.book.discountPrice ?? item.book.price
                 return (
                   <div key={item.book.id} className="flex items-center gap-3 text-xs">
-                    <img
+                    <BookCoverImage
                       src={item.book.coverUrl}
-                      alt=""
-                      className="size-12 rounded object-cover shrink-0 border border-border"
+                      alt={item.book.title}
+                      title={item.book.title}
+                      author={item.book.author}
+                      category={item.book.category}
+                      containerClassName="size-12 rounded shrink-0 border border-border"
+                      className="size-full object-cover"
                     />
                     <div className="flex-1 truncate">
                       <h4 className="font-medium text-foreground truncate">{item.book.title}</h4>

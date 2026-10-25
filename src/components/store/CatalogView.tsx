@@ -2,6 +2,7 @@ import React, { useState, useMemo } from 'react'
 import { useBookstore } from '@/context/BookstoreContext'
 import { BookCategory } from '@/types'
 import { formatRupiah } from '@/lib/utils'
+import { BookCoverImage } from '@/components/common/BookCoverImage'
 import { Star, ShoppingBag, ArrowUpDown, Filter, Eye } from 'lucide-react'
 
 const CATEGORIES: BookCategory[] = [
@@ -148,22 +149,24 @@ export const CatalogView: React.FC = () => {
                     onClick={() => setSelectedBook(book)}
                     className="relative aspect-[2/3] w-full overflow-hidden rounded-lg bg-muted cursor-pointer mb-3"
                   >
-                    <img
+                    <BookCoverImage
                       src={book.coverUrl}
                       alt={book.title}
+                      title={book.title}
+                      author={book.author}
+                      category={book.category}
                       className="size-full object-cover transition-transform duration-300 group-hover:scale-105"
-                      loading="lazy"
                     />
 
                     {/* Badge */}
                     {book.badge && (
-                      <span className="absolute top-2 left-2 rounded bg-primary/95 text-primary-foreground text-[10px] font-bold px-1.5 py-0.5 tracking-wider uppercase shadow-xs">
+                      <span className="absolute top-2 left-2 rounded bg-primary/95 text-primary-foreground text-[10px] font-bold px-1.5 py-0.5 tracking-wider uppercase shadow-xs z-10">
                         {book.badge}
                       </span>
                     )}
 
                     {/* Hover Quick View overlay */}
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center z-10">
                       <span className="inline-flex items-center gap-1.5 rounded-full bg-background/90 px-3 py-1 text-xs font-medium text-foreground shadow-sm">
                         <Eye className="size-3.5" />
                         <span>Lihat Detail</span>
