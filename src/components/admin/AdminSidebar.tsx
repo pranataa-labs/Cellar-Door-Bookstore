@@ -79,8 +79,8 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
       {/* Team / Workspace Switcher Header */}
       <div className="flex h-16 items-center border-b border-sidebar-border px-3.5">
         <div className="flex items-center gap-2.5 overflow-hidden">
-          <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground shadow-xs">
-            <BookOpen className="size-5" />
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-[#E5C690] text-slate-950 shadow-xs">
+            <BookOpen className="size-5 stroke-[2]" />
           </div>
           {!isCollapsed && (
             <div className="truncate text-left">

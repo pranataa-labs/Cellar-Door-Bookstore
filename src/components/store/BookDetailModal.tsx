@@ -169,9 +169,9 @@ export const BookDetailModal: React.FC = () => {
               <button
                 onClick={handleAddToCart}
                 disabled={selectedBook.stock <= 0}
-                className="flex-1 flex items-center justify-center gap-2 h-10 rounded-md bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition shadow-xs disabled:opacity-50"
+                className="flex-1 flex items-center justify-center gap-2 h-10 rounded-md bg-[#E5C690] text-slate-950 font-bold hover:bg-[#d8b578] transition shadow-xs disabled:opacity-50"
               >
-                <ShoppingBag className="size-4" />
+                <ShoppingBag className="size-4 stroke-[2]" />
                 <span>Tambah ke Keranjang</span>
               </button>
             </div>

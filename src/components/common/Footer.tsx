@@ -12,8 +12,8 @@ export const Footer: React.FC = () => {
           {/* Brand */}
           <div className="space-y-3 md:col-span-1">
             <div className="flex items-center gap-2 text-foreground font-serif text-lg font-bold">
-              <div className="flex size-7 items-center justify-center rounded-md bg-primary text-primary-foreground">
-                <BookOpen className="size-4" />
+              <div className="flex size-7 items-center justify-center rounded-md bg-[#E5C690] text-slate-950">
+                <BookOpen className="size-4 stroke-[2]" />
               </div>
               <span>Cellar Door</span>
             </div>

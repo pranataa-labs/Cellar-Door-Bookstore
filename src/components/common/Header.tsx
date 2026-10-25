@@ -40,8 +40,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAuth }) => {
             onClick={() => setActiveView('store')}
             className="flex items-center gap-2.5 text-left transition hover:opacity-90 group"
           >
-            <div className="flex size-9 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-xs group-hover:scale-105 transition-transform">
-              <BookOpen className="size-5" />
+            <div className="flex size-9 items-center justify-center rounded-lg bg-[#E5C690] text-slate-950 shadow-xs group-hover:scale-105 transition-transform">
+              <BookOpen className="size-5 stroke-[2]" />
             </div>
             <div>
               <span className="font-serif text-lg font-bold tracking-tight text-foreground block leading-none">
@@ -129,7 +129,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenAuth }) => {
           >
             <ShoppingBag className="size-4" />
             {cartItemCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full bg-primary text-primary-foreground text-[11px] font-bold shadow-xs animate-in zoom-in-75">
+              <span className="absolute -top-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full bg-[#E5C690] text-slate-950 text-[11px] font-bold shadow-xs animate-in zoom-in-75">
                 {cartItemCount}
               </span>
             )}

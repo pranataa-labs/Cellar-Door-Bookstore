@@ -209,11 +209,11 @@ export const CatalogView: React.FC = () => {
                   <button
                     onClick={() => addToCart(book, 1)}
                     disabled={book.stock <= 0}
-                    className="flex size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition shadow-xs disabled:opacity-50"
+                    className="flex size-8 items-center justify-center rounded-lg bg-[#E5C690] text-slate-950 hover:bg-[#d8b578] transition shadow-xs disabled:opacity-50"
                     title={book.stock <= 0 ? 'Stok Habis' : 'Tambah ke Keranjang'}
                     aria-label="Tambah ke Keranjang"
                   >
-                    <ShoppingBag className="size-3.5" />
+                    <ShoppingBag className="size-3.5 stroke-[2]" />
                   </button>
                 </div>
               </div>
