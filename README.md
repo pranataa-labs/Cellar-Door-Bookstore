@@ -1,5 +1,7 @@
 # Cellar Door Bookstore & Press 📚
 
+[`react`](https://github.com/topics/react) • [`typescript`](https://github.com/topics/typescript) • [`vite`](https://github.com/topics/vite) • [`tailwind`](https://github.com/topics/tailwind) • [`shadcn-admin`](https://github.com/topics/shadcn-admin) • [`bookstore`](https://github.com/topics/bookstore) • [`ecommerce`](https://github.com/topics/ecommerce) • [`dual-sided`](https://github.com/topics/dual-sided)
+
 Aplikasi toko buku modern dengan arsitektur dua sisi (*Dual-Sided: Public Storefront & Admin Backoffice*), dibangun menggunakan **React 19**, **Vite 6**, **Tailwind CSS v4**, dan sistem desain **[shadcn-admin-design-system](https://github.com/pranataa-labs/workflow-master)** beraksen emas hangat (*warm book gold* `#E5C690`).
 
 ---
